@@ -1,0 +1,97 @@
+#include <iostream>
+using namespace std;
+
+// Function to print addresses (Row-Major)
+void printRowMajor(int *arr, int rows, int cols) {
+    cout << "\nROW-MAJOR Memory Layout:\n";
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            int index = i * cols + j;
+            cout << "Element [" << i << "][" << j << "] = "
+                 << arr[index]
+                 << " | Address: " << (arr + index) << endl;
+        }
+    }
+}
+
+// Function to print addresses (Column-Major)
+void printColumnMajor(int *arr, int rows, int cols) {
+    cout << "\nCOLUMN-MAJOR Memory Layout:\n";
+    for (int j = 0; j < cols; j++) {
+        for (int i = 0; i < rows; i++) {
+            int index = j * rows + i;
+            cout << "Element [" << i << "][" << j << "] = "
+                 << arr[index]
+                 << " | Address: " << (arr + index) << endl;
+        }
+    }
+}
+
+// Insert element in array
+void insertElement(int arr[], int &n, int pos, int value) {
+    for (int i = n; i > pos; i--)
+        arr[i] = arr[i - 1];
+    arr[pos] = value;
+    n++;
+}
+
+// Delete element
+void deleteElement(int arr[], int &n, int pos) {
+    for (int i = pos; i < n - 1; i++)
+        arr[i] = arr[i + 1];
+    n--;
+}
+
+// Merge two arrays (simple append)
+void mergeArrays(int a[], int n1, int b[], int n2, int result[]) {
+    for (int i = 0; i < n1; i++)
+        result[i] = a[i];
+    for (int i = 0; i < n2; i++)
+        result[n1 + i] = b[i];
+}
+
+int main() {
+
+    // Basic 1D array operations
+    int arr[20] = {10, 20, 30, 40, 50};
+    int n = 5;
+
+    cout << "Original Array:\n";
+    for (int i = 0; i < n; i++) cout << arr[i] << " ";
+    cout << endl;
+
+    // INSERT: Insert 99 at position 2
+    insertElement(arr, n, 2, 99);
+    cout << "\nAfter Insertion (99 at pos 2):\n";
+    for (int i = 0; i < n; i++) cout << arr[i] << " ";
+    cout << endl;
+
+    // DELETE: Delete element at position 3
+    deleteElement(arr, n, 3);
+    cout << "\nAfter Deletion (pos 3):\n";
+    for (int i = 0; i < n; i++) cout << arr[i] << " ";
+    cout << endl;
+
+    // MERGE 2 arrays
+    int b[5] = {7, 8, 9, 10, 11};
+    int merged[20];
+    mergeArrays(arr, n, b, 5, merged);
+
+    cout << "\nMerged Array:\n";
+    for (int i = 0; i < n + 5; i++) cout << merged[i] << " ";
+    cout << endl;
+
+    // ----------------------------
+    // 2D ARRAY SIMULATION USING 1D
+    // ----------------------------
+
+    cout << "\n\n=== 2D ARRAY SIMULATED USING 1D ARRAY ===\n";
+
+    int rows = 3, cols = 3;
+    int mat[9] = {1,2,3,4,5,6,7,8,9};
+
+    printRowMajor(mat, rows, cols);
+    printColumnMajor(mat, rows, cols);
+
+    return 0;
+}

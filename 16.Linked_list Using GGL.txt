@@ -1,0 +1,85 @@
+#include <iostream>
+using namespace std;
+
+class GLL {
+public:
+    int flag;        // 0 = atom, 1 = sublist
+    char data;       // used only if flag = 0
+    GLL *down;       // sublist pointer
+    GLL *next;       // next element pointer
+
+    GLL() {
+        flag = 0;
+        data = '\0';
+        down = next = NULL;
+    }
+};
+
+// Function to create GLL recursively
+GLL* create() {
+    GLL *start = NULL, *temp = NULL, *newNode = NULL;
+    char ch, choice;
+
+    do {
+        newNode = new GLL();
+
+        cout << "\nEnter element (character): ";
+        cin >> ch;
+
+        if (ch == '(') {
+            newNode->flag = 1;
+            cout << "\nCreating a sublist...\n";
+            newNode->down = create();  // Recursive call for sublist
+        }
+        else {
+            newNode->flag = 0;
+            newNode->data = ch;
+        }
+
+        if (start == NULL)
+            start = newNode;
+        else
+            temp->next = newNode;
+
+        temp = newNode;
+
+        cout << "Add more elements at this level? (y/n): ";
+        cin >> choice;
+    } while (choice == 'y' || choice == 'Y');
+
+    return start;
+}
+
+// Recursive function to display GLL
+void display(GLL *start) {
+    GLL *temp = start;
+
+    cout << "( ";
+    while (temp != NULL) {
+        if (temp->flag == 0) {
+            cout << temp->data << " ";
+        }
+        else {
+            display(temp->down);
+        }
+        temp = temp->next;
+    }
+    cout << ") ";
+}
+
+int main() {
+    GLL *head = NULL;
+
+    cout << "=== GENERALIZED LINKED LIST (GLL) IMPLEMENTATION ===\n";
+
+    cout << "\nStart entering GLL elements.";
+    cout << "\nUse '(' (opening bracket) to create a sublist.\n";
+
+    head = create();
+
+    cout << "\nGLL Representation:\n";
+    display(head);
+
+    cout << "\n\nProgram Finished.\n";
+    return 0;
+}

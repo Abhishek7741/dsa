@@ -1,0 +1,65 @@
+#include <iostream>
+using namespace std;
+
+// Global counters
+int recursiveCalls = 0;
+int multiplications = 0;
+int additions = 0;
+
+// Gauss multiplication (recursive for 2-digit blocks)
+int gaussMultiply(int a, int b) {
+    recursiveCalls++;
+
+    // Base case: if numbers are single digit
+    if (a < 10 && b < 10) {
+        multiplications++;
+        return a * b;
+    }
+
+    // Split numbers into two halves (a1 a0) and (b1 b0)
+    int a1 = a / 10;
+    int a0 = a % 10;
+    int b1 = b / 10;
+    int b0 = b % 10;
+
+    additions += 4;   // For all + and %
+
+    // Compute components
+    int z0 = gaussMultiply(a0, b0);     // a0*b0
+    int z2 = gaussMultiply(a1, b1);     // a1*b1
+
+    int s1 = a0 + a1;
+    int s2 = b0 + b1;
+    additions += 2;
+
+    int z1 = gaussMultiply(s1, s2);     // (a0+a1)(b0+b1)
+    
+    z1 = z1 - z0 - z2;                  // Correction
+    additions += 2;
+
+    // Combine results
+    int result = (z2 * 100) + (z1 * 10) + z0;
+    multiplications += 2;   // z2*100, z1*10
+    additions += 2;         // + operations
+
+    return result;
+}
+
+int main() {
+    int a, b;
+
+    cout << "Enter first number: ";
+    cin >> a;
+    cout << "Enter second number: ";
+    cin >> b;
+
+    int result = gaussMultiply(a, b);
+
+    cout << "\nGauss Multiplication Result: " << result << endl;
+    cout << "\n--- Operation Counts ---" << endl;
+    cout << "Recursive Calls: " << recursiveCalls << endl;
+    cout << "Multiplications: " << multiplications << endl;
+    cout << "Additions: " << additions << endl;
+
+    return 0;
+}

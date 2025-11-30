@@ -1,0 +1,234 @@
+#include <iostream>
+using namespace std;
+
+class Node {
+public:
+    int data;
+    Node* next;
+
+    Node(int val) {
+        data = val;
+        next = NULL;
+    }
+};
+
+class SinglyLinkedList {
+public:
+    Node* head;
+
+    SinglyLinkedList() {
+        head = NULL;
+    }
+
+    // Insert at beginning
+    void insertAtBeginning(int val) {
+        Node* newNode = new Node(val);
+        newNode->next = head;
+        head = newNode;
+    }
+
+    // Insert at end
+    void insertAtEnd(int val) {
+        Node* newNode = new Node(val);
+
+        if (head == NULL) {
+            head = newNode;
+            return;
+        }
+
+        Node* temp = head;
+        while (temp->next != NULL)
+            temp = temp->next;
+
+        temp->next = newNode;
+    }
+
+    // Insert at specific position
+    void insertAtPosition(int val, int pos) {
+        if (pos == 1) {
+            insertAtBeginning(val);
+            return;
+        }
+
+        Node* newNode = new Node(val);
+        Node* temp = head;
+
+        for (int i = 1; i < pos - 1 && temp != NULL; i++)
+            temp = temp->next;
+
+        if (temp == NULL) {
+            cout << "Position out of bounds!\n";
+            delete newNode;
+            return;
+        }
+
+        newNode->next = temp->next;
+        temp->next = newNode;
+    }
+
+    // Delete from beginning
+    void deleteFromBeginning() {
+        if (head == NULL) {
+            cout << "List is empty!\n";
+            return;
+        }
+        Node* temp = head;
+        head = head->next;
+        delete temp;
+    }
+
+    // Delete from end
+    void deleteFromEnd() {
+        if (head == NULL) {
+            cout << "List is empty!\n";
+            return;
+        }
+
+        if (head->next == NULL) {
+            delete head;
+            head = NULL;
+            return;
+        }
+
+        Node* temp = head;
+        while (temp->next->next != NULL)
+            temp = temp->next;
+
+        delete temp->next;
+        temp->next = NULL;
+    }
+
+    // Delete at specific position
+    void deleteAtPosition(int pos) {
+        if (head == NULL) {
+            cout << "List is empty!\n";
+            return;
+        }
+
+        if (pos == 1) {
+            deleteFromBeginning();
+            return;
+        }
+
+        Node* temp = head;
+        for (int i = 1; i < pos - 1 && temp->next != NULL; i++)
+            temp = temp->next;
+
+        if (temp->next == NULL) {
+            cout << "Position out of bounds!\n";
+            return;
+        }
+
+        Node* del = temp->next;
+        temp->next = del->next;
+        delete del;
+    }
+
+    // Search for an element
+    void search(int val) {
+        Node* temp = head;
+        int pos = 1;
+
+        while (temp != NULL) {
+            if (temp->data == val) {
+                cout << "Element found at position: " << pos << endl;
+                return;
+            }
+            temp = temp->next;
+            pos++;
+        }
+
+        cout << "Element not found!\n";
+    }
+
+    // Display the list
+    void display() {
+        if (head == NULL) {
+            cout << "List is empty!\n";
+            return;
+        }
+
+        Node* temp = head;
+        cout << "Linked List: ";
+        while (temp != NULL) {
+            cout << temp->data << " -> ";
+            temp = temp->next;
+        }
+        cout << "NULL\n";
+    }
+};
+
+int main() {
+    SinglyLinkedList sll;
+    int choice, val, pos;
+
+    while (true) {
+        cout << "\n--- Singly Linked List Menu ---\n";
+        cout << "1. Insert at Beginning\n";
+        cout << "2. Insert at End\n";
+        cout << "3. Insert at Position\n";
+        cout << "4. Delete from Beginning\n";
+        cout << "5. Delete from End\n";
+        cout << "6. Delete from Position\n";
+        cout << "7. Search Element\n";
+        cout << "8. Display List\n";
+        cout << "9. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter value: ";
+                cin >> val;
+                sll.insertAtBeginning(val);
+                break;
+
+            case 2:
+                cout << "Enter value: ";
+                cin >> val;
+                sll.insertAtEnd(val);
+                break;
+
+            case 3:
+                cout << "Enter value: ";
+                cin >> val;
+                cout << "Enter position: ";
+                cin >> pos;
+                sll.insertAtPosition(val, pos);
+                break;
+
+            case 4:
+                sll.deleteFromBeginning();
+                break;
+
+            case 5:
+                sll.deleteFromEnd();
+                break;
+
+            case 6:
+                cout << "Enter position: ";
+                cin >> pos;
+                sll.deleteAtPosition(pos);
+                break;
+
+            case 7:
+                cout << "Enter value to search: ";
+                cin >> val;
+                sll.search(val);
+                break;
+
+            case 8:
+                sll.display();
+                break;
+
+            case 9:
+                cout << "Exiting...\n";
+                return 0;
+
+            default:
+                cout << "Invalid choice!\n";
+        }
+    }
+
+    return 0;
+}

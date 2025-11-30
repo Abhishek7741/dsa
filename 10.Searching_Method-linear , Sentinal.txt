@@ -1,0 +1,80 @@
+#include <iostream>
+using namespace std;
+
+// Function for Linear Search
+int linearSearch(int arr[], int n, int key) {
+    for (int i = 0; i < n; i++) {
+        if (arr[i] == key)
+            return i;  // Found
+    }
+    return -1;  // Not found
+}
+
+// Function for Sentinel Search
+int sentinelSearch(int arr[], int n, int key) {
+    int last = arr[n-1];
+    arr[n-1] = key;  // Place sentinel
+
+    int i = 0;
+    while (arr[i] != key) {
+        i++;
+    }
+
+    arr[n-1] = last;  // Restore last element
+
+    if (i < n-1 || arr[n-1] == key)
+        return i;
+    else
+        return -1;
+}
+
+int main() {
+    int arr[100], n, key, choice;
+
+    cout << "Enter number of elements: ";
+    cin >> n;
+    cout << "Enter elements:\n";
+    for (int i = 0; i < n; i++) cin >> arr[i];
+
+    do {
+        cout << "\n--- Search Menu ---\n";
+        cout << "1. Linear Search\n";
+        cout << "2. Sentinel Search\n";
+        cout << "3. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch(choice) {
+            case 1:
+                cout << "Enter key to search: ";
+                cin >> key;
+                int index1;
+                index1 = linearSearch(arr, n, key);
+                if (index1 != -1)
+                    cout << "Element found at index " << index1 << endl;
+                else
+                    cout << "Element not found\n";
+                break;
+
+            case 2:
+                cout << "Enter key to search: ";
+                cin >> key;
+                int index2;
+                index2 = sentinelSearch(arr, n, key);
+                if (index2 != -1)
+                    cout << "Element found at index " << index2 << endl;
+                else
+                    cout << "Element not found\n";
+                break;
+
+            case 3:
+                cout << "Exiting program.\n";
+                break;
+
+            default:
+                cout << "Invalid choice!\n";
+        }
+    } while(choice != 3);
+
+    return 0;
+}

@@ -1,0 +1,143 @@
+#include <iostream>
+using namespace std;
+
+class Node {
+public:
+    int coeff;
+    int exp;
+    Node *next;
+
+    Node(int c, int e) {
+        coeff = c;
+        exp = e;
+        next = NULL;
+    }
+};
+
+class Polynomial {
+public:
+    Node *head;
+
+    Polynomial() {
+        head = NULL;
+    }
+
+    // Insert polynomial term in decreasing order of exponent
+    void insertTerm(int coeff, int exp) {
+        Node *newNode = new Node(coeff, exp);
+
+        // If list is empty or new exponent is greater than head exponent
+        if (head == NULL || exp > head->exp) {
+            newNode->next = head;
+            head = newNode;
+            return;
+        }
+
+        Node *temp = head;
+        Node *prev = NULL;
+
+        while (temp != NULL && temp->exp >= exp) {
+            if (temp->exp == exp) {
+                // Combine like terms
+                temp->coeff += coeff;
+                delete newNode;
+                return;
+            }
+            prev = temp;
+            temp = temp->next;
+        }
+
+        newNode->next = temp;
+        prev->next = newNode;
+    }
+
+    // Display polynomial
+    void display() {
+        Node *temp = head;
+        if (temp == NULL) {
+            cout << "0";
+            return;
+        }
+
+        while (temp != NULL) {
+            cout << temp->coeff << "x^" << temp->exp;
+            temp = temp->next;
+            if (temp != NULL) cout << " + ";
+        }
+        cout << endl;
+    }
+
+    // Add two polynomials
+    Polynomial add(Polynomial P2) {
+        Polynomial result;
+        Node *p1 = head;
+        Node *p2 = P2.head;
+
+        while (p1 != NULL && p2 != NULL) {
+            if (p1->exp > p2->exp) {
+                result.insertTerm(p1->coeff, p1->exp);
+                p1 = p1->next;
+            }
+            else if (p1->exp < p2->exp) {
+                result.insertTerm(p2->coeff, p2->exp);
+                p2 = p2->next;
+            }
+            else {
+                // Same exponent → add coefficients
+                result.insertTerm(p1->coeff + p2->coeff, p1->exp);
+                p1 = p1->next;
+                p2 = p2->next;
+            }
+        }
+
+        // Remaining terms
+        while (p1 != NULL) {
+            result.insertTerm(p1->coeff, p1->exp);
+            p1 = p1->next;
+        }
+        while (p2 != NULL) {
+            result.insertTerm(p2->coeff, p2->exp);
+            p2 = p2->next;
+        }
+
+        return result;
+    }
+};
+
+int main() {
+    Polynomial P1, P2;
+
+    int n1, n2;
+    int coeff, exp;
+
+    cout << "Enter number of terms in Polynomial 1: ";
+    cin >> n1;
+
+    cout << "Enter terms as (coeff exponent):\n";
+    for (int i = 0; i < n1; i++) {
+        cin >> coeff >> exp;
+        P1.insertTerm(coeff, exp);
+    }
+
+    cout << "\nEnter number of terms in Polynomial 2: ";
+    cin >> n2;
+
+    cout << "Enter terms as (coeff exponent):\n";
+    for (int i = 0; i < n2; i++) {
+        cin >> coeff >> exp;
+        P2.insertTerm(coeff, exp);
+    }
+
+    cout << "\nPolynomial 1: ";
+    P1.display();
+
+    cout << "Polynomial 2: ";
+    P2.display();
+
+    Polynomial Sum = P1.add(P2);
+
+    cout << "\nSum of Polynomials: ";
+    Sum.display();
+
+    return 0;
+}

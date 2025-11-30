@@ -1,0 +1,58 @@
+#include <iostream>
+#include <stack>
+using namespace std;
+
+// Structure to simulate recursion stack frame
+struct Frame {
+    int n;
+    char src, aux, dest;
+    int stage;  // 0 = first call, 1 = move, 2 = second call
+};
+
+void towerOfHanoiIterative(int n, char src, char aux, char dest) {
+    stack<Frame> st;
+
+    // Push initial call
+    st.push({n, src, aux, dest, 0});
+
+    while (!st.empty()) {
+        Frame &top = st.top();
+
+        if (top.n == 0) {
+            st.pop();  // nothing to do
+            continue;
+        }
+
+        if (top.stage == 0) {
+            // First recursive call: ToH(n-1, src, dest, aux)
+            top.stage = 1;  // next time, execute stage 1
+            st.push({top.n - 1, top.src, top.dest, top.aux, 0});
+        }
+        else if (top.stage == 1) {
+            // Actual move
+            cout << "Move disk " << top.n << " from " << top.src
+                 << " → " << top.dest << endl;
+
+            top.stage = 2;  // next time, execute stage 2
+        }
+        else if (top.stage == 2) {
+            // Second recursive call: ToH(n-1, aux, src, dest)
+            top.stage = 3;  // mark completion
+            st.push({top.n - 1, top.aux, top.src, top.dest, 0});
+        }
+        else {
+            st.pop();  // Fully completed this frame
+        }
+    }
+}
+
+int main() {
+    int n;
+    cout << "Enter number of disks: ";
+    cin >> n;
+
+    cout << "\nSteps (Explicit Stack Simulation):\n\n";
+    towerOfHanoiIterative(n, 'A', 'B', 'C');
+
+    return 0;
+}

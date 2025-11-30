@@ -1,0 +1,124 @@
+#include <iostream>
+using namespace std;
+
+// Define structure for a term of polynomial
+struct Term {
+    int coeff;
+    int exp;
+};
+
+// Function to read polynomial
+int readPolynomial(Term poly[], int maxTerms) {
+    int n;
+    cout << "Enter number of terms: ";
+    cin >> n;
+
+    if (n > maxTerms) {
+        cout << "Exceeded maximum terms allowed!\n";
+        return 0;
+    }
+
+    cout << "Enter coefficient and exponent for each term (descending order of exponents):\n";
+    for (int i = 0; i < n; i++) {
+        cin >> poly[i].coeff >> poly[i].exp;
+    }
+    return n;
+}
+
+// Function to print polynomial
+void printPolynomial(Term poly[], int n) {
+    for (int i = 0; i < n; i++) {
+        cout << poly[i].coeff << "x^" << poly[i].exp;
+        if (i != n - 1) cout << " + ";
+    }
+    cout << endl;
+}
+
+// Function to add two polynomials
+int addPolynomials(Term A[], int n1, Term B[], int n2, Term sum[]) {
+    int i = 0, j = 0, k = 0;
+
+    while (i < n1 && j < n2) {
+        if (A[i].exp == B[j].exp) {
+            int coeffSum = A[i].coeff + B[j].coeff;
+            if (coeffSum != 0) {
+                sum[k].coeff = coeffSum;
+                sum[k].exp = A[i].exp;
+                k++;
+            }
+            i++; j++;
+        } else if (A[i].exp > B[j].exp) {
+            sum[k++] = A[i++];
+        } else {
+            sum[k++] = B[j++];
+        }
+    }
+
+    while (i < n1) sum[k++] = A[i++];
+    while (j < n2) sum[k++] = B[j++];
+
+    return k;  // Number of terms in sum
+}
+
+// Function to multiply two polynomials
+int multiplyPolynomials(Term A[], int n1, Term B[], int n2, Term prod[]) {
+    Term temp[100]; // Temporary array
+    int k = 0;
+
+    // Multiply each term
+    for (int i = 0; i < n1; i++) {
+        for (int j = 0; j < n2; j++) {
+            temp[k].coeff = A[i].coeff * B[j].coeff;
+            temp[k].exp = A[i].exp + B[j].exp;
+            k++;
+        }
+    }
+
+    // Combine like terms
+    int prodTerms = 0;
+    for (int i = 0; i < k; i++) {
+        if (temp[i].coeff == 0) continue;
+        int sumCoeff = temp[i].coeff;
+        int exp = temp[i].exp;
+
+        for (int j = i + 1; j < k; j++) {
+            if (temp[j].exp == exp) {
+                sumCoeff += temp[j].coeff;
+                temp[j].coeff = 0; // mark as used
+            }
+        }
+        prod[prodTerms].coeff = sumCoeff;
+        prod[prodTerms].exp = exp;
+        prodTerms++;
+    }
+
+    return prodTerms;
+}
+
+int main() {
+    const int MAX_TERMS = 20;
+    Term A[MAX_TERMS], B[MAX_TERMS], sum[2*MAX_TERMS], prod[100];
+    int n1, n2, sumTerms, prodTerms;
+
+    cout << "Polynomial A:\n";
+    n1 = readPolynomial(A, MAX_TERMS);
+
+    cout << "Polynomial B:\n";
+    n2 = readPolynomial(B, MAX_TERMS);
+
+    cout << "\nPolynomial A: ";
+    printPolynomial(A, n1);
+
+    cout << "Polynomial B: ";
+    printPolynomial(B, n2);
+
+    sumTerms = addPolynomials(A, n1, B, n2, sum);
+    cout << "\nA + B = ";
+    printPolynomial(sum, sumTerms);
+
+    prodTerms = multiplyPolynomials(A, n1, B, n2, prod);
+    cout << "A * B = ";
+    printPolynomial(prod, prodTerms);
+
+    return 0;
+}

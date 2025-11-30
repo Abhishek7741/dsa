@@ -1,0 +1,173 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Node {
+public:
+    string song;
+    Node* prev;
+    Node* next;
+
+    Node(string s) {
+        song = s;
+        prev = next = NULL;
+    }
+};
+
+class Playlist {
+public:
+    Node* head;
+    Node* current;
+
+    Playlist() {
+        head = NULL;
+        current = NULL;
+    }
+
+    // Add a song at end
+    void addSong(string s) {
+        Node* newNode = new Node(s);
+
+        if (head == NULL) {
+            head = newNode;
+            current = newNode;
+            return;
+        }
+
+        Node* temp = head;
+        while (temp->next != NULL)
+            temp = temp->next;
+
+        temp->next = newNode;
+        newNode->prev = temp;
+    }
+
+    // Delete current song
+    void deleteCurrentSong() {
+        if (current == NULL) {
+            cout << "Playlist empty!\n";
+            return;
+        }
+
+        cout << "Deleting: " << current->song << endl;
+
+        if (current->prev != NULL)
+            current->prev->next = current->next;
+        else
+            head = current->next;
+
+        if (current->next != NULL)
+            current->next->prev = current->prev;
+
+        Node* temp = current;
+
+        // Move to next or previous
+        if (current->next != NULL)
+            current = current->next;
+        else
+            current = current->prev;
+
+        delete temp;
+    }
+
+    // Move to next song
+    void nextSong() {
+        if (current == NULL) {
+            cout << "Playlist empty!\n";
+            return;
+        }
+
+        if (current->next != NULL) {
+            current = current->next;
+            cout << "Now playing: " << current->song << endl;
+        } else {
+            cout << "Already at last song!\n";
+        }
+    }
+
+    // Move to previous song
+    void previousSong() {
+        if (current == NULL) {
+            cout << "Playlist empty!\n";
+            return;
+        }
+
+        if (current->prev != NULL) {
+            current = current->prev;
+            cout << "Now playing: " << current->song << endl;
+        } else {
+            cout << "Already at first song!\n";
+        }
+    }
+
+    // Display full playlist
+    void displayPlaylist() {
+        if (head == NULL) {
+            cout << "Playlist empty!\n";
+            return;
+        }
+
+        Node* temp = head;
+        cout << "\n--- Playlist ---\n";
+        while (temp != NULL) {
+            if (temp == current)
+                cout << "> " << temp->song << "   (Current Song)\n";
+            else
+                cout << temp->song << endl;
+            temp = temp->next;
+        }
+        cout << "----------------\n";
+    }
+};
+
+int main() {
+    Playlist p;
+    int choice;
+    string song;
+
+    while (true) {
+        cout << "\n--- Music Playlist Menu ---\n";
+        cout << "1. Add Song\n";
+        cout << "2. Delete Current Song\n";
+        cout << "3. Next Song\n";
+        cout << "4. Previous Song\n";
+        cout << "5. Display Playlist\n";
+        cout << "6. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter song name: ";
+                cin.ignore();
+                getline(cin, song);
+                p.addSong(song);
+                break;
+
+            case 2:
+                p.deleteCurrentSong();
+                break;
+
+            case 3:
+                p.nextSong();
+                break;
+
+            case 4:
+                p.previousSong();
+                break;
+
+            case 5:
+                p.displayPlaylist();
+                break;
+
+            case 6:
+                cout << "Exiting...\n";
+                return 0;
+
+            default:
+                cout << "Invalid choice!\n";
+        }
+    }
+
+    return 0;
+}

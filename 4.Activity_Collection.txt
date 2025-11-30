@@ -1,0 +1,48 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+// Structure for activity
+struct Activity {
+    int start, finish;
+};
+
+int main() {
+    int n;
+    cout << "Enter number of activities: ";
+    cin >> n;
+
+    vector<Activity> A(n);
+
+    cout << "Enter start times:\n";
+    for (int i = 0; i < n; i++)
+        cin >> A[i].start;
+
+    cout << "Enter finish times:\n";
+    for (int i = 0; i < n; i++)
+        cin >> A[i].finish;
+
+    // Sort activities by finish time
+    sort(A.begin(), A.end(), [](Activity x, Activity y) {
+        return x.finish < y.finish;
+    });
+
+    int count = 1;
+    int last = 0;
+
+    cout << "\nSelected activities:\n";
+    cout << "(" << A[0].start << ", " << A[0].finish << ")\n";
+
+    for (int i = 1; i < n; i++) {
+        if (A[i].start >= A[last].finish) {
+            count++;
+            last = i;
+            cout << "(" << A[i].start << ", " << A[i].finish << ")\n";
+        }
+    }
+
+    cout << "\nMaximum Non-Overlapping Activities = " << count << endl;
+
+    return 0;
+}

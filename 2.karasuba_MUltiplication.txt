@@ -1,0 +1,68 @@
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+// Global counters
+int recursiveCalls = 0;
+int multiplications = 0;
+int additions = 0;
+
+// Karatsuba Algorithm
+long long karatsuba(long long x, long long y) {
+    recursiveCalls++;
+
+    // Base case: single digit multiplication
+    if (x < 10 && y < 10) {
+        multiplications++;
+        return x * y;
+    }
+
+    // Find number of digits
+    int n = max((int)log10(x) + 1, (int)log10(y) + 1);
+    int m = n / 2;
+
+    long long high1 = x / (long long)pow(10, m);
+    long long low1  = x % (long long)pow(10, m);
+    long long high2 = y / (long long)pow(10, m);
+    long long low2  = y % (long long)pow(10, m);
+    additions += 4;  // splits
+
+    // Recursive multiplications
+    long long z0 = karatsuba(low1, low2);             // a * c
+    long long z2 = karatsuba(high1, high2);           // b * d
+    long long z1 = karatsuba(low1 + high1, low2 + high2);  // (a+b)(c+d)
+    additions += 2;  // low1+high1, low2+high2
+
+    // Compute final middle term
+    long long mid = z1 - z2 - z0;
+    additions += 2;
+
+    // Combine results
+    long long result = z2 * (long long)pow(10, 2*m) +
+                       mid * (long long)pow(10, m) +
+                       z0;
+    multiplications += 2;  // two extra multiplications for shifting
+    additions += 2;
+
+    return result;
+}
+
+int main() {
+    long long x, y;
+
+    cout << "Enter first number: ";
+    cin >> x;
+    cout << "Enter second number: ";
+    cin >> y;
+
+    long long result = karatsuba(x, y);
+
+    cout << "\nKaratsuba Multiplication Result: " << result << endl;
+
+    cout << "\n--- Operation Counts ---" << endl;
+    cout << "Recursive Calls: " << recursiveCalls << endl;
+    cout << "Multiplications: " << multiplications << endl;
+    cout << "Additions: " << additions << endl;
+
+    return 0;
+}

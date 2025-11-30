@@ -1,0 +1,106 @@
+#include <iostream>
+using namespace std;
+
+#define MAX 10
+
+int queue[MAX];
+int front = -1, rear = -1;
+
+// Check if queue is empty
+bool isEmpty() {
+    return front == -1;
+}
+
+// Check if queue is full
+bool isFull() {
+    return rear == MAX - 1;
+}
+
+// Add print job to queue
+void enqueue(string job) {
+    if (isFull()) {
+        cout << "Printer Queue Full! Cannot add job: " << job << endl;
+        return;
+    }
+
+    if (isEmpty()) front = 0;
+
+    rear++;
+    queue[rear] = rear; // storing job ID as int
+    cout << "Added print job " << rear + 1 << ": " << job << endl;
+}
+
+// Process print job
+void dequeue(string jobDescriptions[]) {
+    if (isEmpty()) {
+        cout << "Printer Queue is empty! No jobs to process.\n";
+        return;
+    }
+
+    cout << "Processing print job " << front + 1 << ": " << jobDescriptions[queue[front]] << endl;
+    if (front == rear) {
+        front = rear = -1; // queue becomes empty
+    } else {
+        front++;
+    }
+}
+
+// Display all print jobs in queue
+void display(string jobDescriptions[]) {
+    if (isEmpty()) {
+        cout << "Printer Queue is empty.\n";
+        return;
+    }
+
+    cout << "Current print jobs in queue:\n";
+    for (int i = front; i <= rear; i++) {
+        cout << queue[i] + 1 << ": " << jobDescriptions[queue[i]] << endl;
+    }
+}
+
+int main() {
+    string jobDescriptions[MAX];
+    int choice;
+    string job;
+
+    while (true) {
+        cout << "\n--- Printer Queue Menu ---\n";
+        cout << "1. Add Print Job\n";
+        cout << "2. Process Next Job\n";
+        cout << "3. Display Queue\n";
+        cout << "4. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+        cin.ignore(); // consume newline
+
+        switch (choice) {
+            case 1:
+                if (rear == MAX - 1) {
+                    cout << "Queue is full. Cannot add more jobs.\n";
+                    break;
+                }
+                cout << "Enter job description: ";
+                getline(cin, job);
+                jobDescriptions[rear + 1] = job;
+                enqueue(job);
+                break;
+
+            case 2:
+                dequeue(jobDescriptions);
+                break;
+
+            case 3:
+                display(jobDescriptions);
+                break;
+
+            case 4:
+                cout << "Exiting...\n";
+                return 0;
+
+            default:
+                cout << "Invalid choice!\n";
+        }
+    }
+
+    return 0;
+}

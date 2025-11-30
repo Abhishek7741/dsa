@@ -1,0 +1,123 @@
+#include <iostream>
+#include <chrono>
+using namespace std;
+using namespace std::chrono;
+
+// ---------------------- Bubble Sort ----------------------
+void bubbleSort(int arr[], int n, int &comparisons, int &swaps) {
+    comparisons = 0;
+    swaps = 0;
+
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            comparisons++;
+            if (arr[j] > arr[j + 1]) {
+                swaps++;
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}
+
+// ---------------------- Insertion Sort ----------------------
+void insertionSort(int arr[], int n, int &comparisons, int &shifts) {
+    comparisons = 0;
+    shifts = 0;
+
+    for (int i = 1; i < n; i++) {
+        int key = arr[i];
+        int j = i - 1;
+
+        comparisons++;  // For entering the loop
+
+        while (j >= 0 && arr[j] > key) {
+            comparisons++;
+            arr[j + 1] = arr[j];
+            shifts++;
+            j--;
+        }
+        arr[j + 1] = key;
+        shifts++;
+    }
+}
+
+// ---------------------- Print Array ----------------------
+void printArray(int arr[], int n) {
+    for (int i = 0; i < n; i++)
+        cout << arr[i] << " ";
+    cout << endl;
+}
+
+// ---------------------- Copy Array ----------------------
+void copyArray(int src[], int dest[], int n) {
+    for (int i = 0; i < n; i++)
+        dest[i] = src[i];
+}
+
+// ---------------------- Main ----------------------
+int main() {
+    int n;
+    int original[100], bArr[100], iArr[100];
+
+    cout << "Enter number of elements: ";
+    cin >> n;
+
+    cout << "Enter elements:\n";
+    for (int i = 0; i < n; i++)
+        cin >> original[i];
+
+    // Copy original array for fair comparison
+    copyArray(original, bArr, n);
+    copyArray(original, iArr, n);
+
+    int bComp, bSwap, iComp, iShift;
+
+    // ---- Bubble Sort Time ----
+    auto start1 = high_resolution_clock::now();
+    bubbleSort(bArr, n, bComp, bSwap);
+    auto stop1 = high_resolution_clock::now();
+    auto bubbleTime = duration_cast<microseconds>(stop1 - start1).count();
+
+    // ---- Insertion Sort Time ----
+    auto start2 = high_resolution_clock::now();
+    insertionSort(iArr, n, iComp, iShift);
+    auto stop2 = high_resolution_clock::now();
+    auto insertionTime = duration_cast<microseconds>(stop2 - start2).count();
+
+    // ---------- OUTPUT ----------
+    cout << "\n===== SORTED ARRAYS =====\n";
+
+    cout << "\nBubble Sorted Array: ";
+    printArray(bArr, n);
+
+    cout << "Insertion Sorted Array: ";
+    printArray(iArr, n);
+
+    cout << "\n===== PERFORMANCE REPORT =====\n";
+
+    cout << "\n--- Bubble Sort ---\n";
+    cout << "Comparisons: " << bComp << endl;
+    cout << "Swaps:       " << bSwap << endl;
+    cout << "Time Taken:  " << bubbleTime << " microseconds\n";
+
+    cout << "\n--- Insertion Sort ---\n";
+    cout << "Comparisons: " << iComp << endl;
+    cout << "Shifts:      " << iShift << endl;
+    cout << "Time Taken:  " << insertionTime << " microseconds\n";
+
+    cout << "\n===== INSIGHTS =====\n";
+
+    if (bubbleTime < insertionTime)
+        cout << "Bubble Sort was faster in execution time.\n";
+    else
+        cout << "Insertion Sort was faster in execution time.\n";
+
+    if (bComp < iComp)
+        cout << "Bubble Sort performed fewer comparisons.\n";
+    else
+        cout << "Insertion Sort performed fewer comparisons.\n";
+
+    return 0;
+}

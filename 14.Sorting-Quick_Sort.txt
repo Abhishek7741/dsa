@@ -1,0 +1,92 @@
+#include <iostream>
+#include <chrono>
+using namespace std;
+using namespace std::chrono;
+
+int comparisons = 0;
+int swaps = 0;
+
+// ---------------------- Swap Function ----------------------
+void swapElements(int &a, int &b) {
+    swaps++;
+    int temp = a;
+    a = b;
+    b = temp;
+}
+
+// ---------------------- Partition Function ----------------------
+int partition(int arr[], int low, int high) {
+    int pivot = arr[high];
+    int i = low - 1;
+
+    for (int j = low; j < high; j++) {
+        comparisons++;  // Comparing arr[j] with pivot
+
+        if (arr[j] < pivot) {
+            i++;
+            swapElements(arr[i], arr[j]);
+        }
+    }
+
+    swapElements(arr[i + 1], arr[high]);
+    return i + 1;
+}
+
+// ---------------------- Quick Sort ----------------------
+void quickSort(int arr[], int low, int high) {
+    if (low < high) {
+        int pi = partition(arr, low, high);
+
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+}
+
+// ---------------------- Print Array ----------------------
+void printArray(int arr[], int n) {
+    for (int i = 0; i < n; i++)
+        cout << arr[i] << " ";
+    cout << endl;
+}
+
+// ---------------------- Main ----------------------
+int main() {
+    int n, arr[200];
+
+    cout << "Enter number of elements: ";
+    cin >> n;
+
+    cout << "Enter elements:\n";
+    for (int i = 0; i < n; i++)
+        cin >> arr[i];
+
+    // Track time
+    auto start = high_resolution_clock::now();
+    quickSort(arr, 0, n - 1);
+    auto stop = high_resolution_clock::now();
+
+    long long timeTaken = duration_cast<microseconds>(stop - start).count();
+
+    // ---------- OUTPUT REPORT ----------
+    cout << "\n===== QUICK SORT RESULT =====\n";
+    cout << "Sorted Array: ";
+    printArray(arr, n);
+
+    cout << "\n===== PERFORMANCE REPORT =====\n";
+    cout << "Total Comparisons: " << comparisons << endl;
+    cout << "Total Swaps:       " << swaps << endl;
+    cout << "Time Taken:        " << timeTaken << " microseconds\n";
+
+    cout << "\n===== INSIGHTS =====\n";
+    if (comparisons < swaps)
+        cout << "Quick Sort used more swaps than comparisons.\n";
+    else
+        cout << "Quick Sort used more comparisons than swaps.\n";
+
+    if (timeTaken < 1000)
+        cout << "Execution time is very fast for given input.\n";
+    else
+        cout << "Execution time depends on pivot selection.\n";
+
+    return 0;
+}

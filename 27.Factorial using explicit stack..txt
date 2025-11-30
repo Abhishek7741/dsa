@@ -1,0 +1,35 @@
+#include <iostream>
+#include <stack>
+using namespace std;
+
+long long factorialStack(int n) {
+    if (n < 0) {
+        cout << "Error: Factorial of negative number not possible.\n";
+        return -1;
+    }
+
+    stack<int> st;
+    for (int i = n; i > 1; i--)
+        st.push(i);
+
+    long long result = 1;
+    while (!st.empty()) {
+        result *= st.top();
+        st.pop();
+    }
+
+    return result;
+}
+
+int main() {
+    int n;
+    cout << "Enter a number: ";
+    cin >> n;
+
+    long long result = factorialStack(n);
+
+    if (result != -1)
+        cout << "Factorial of " << n << " is: " << result << endl;
+
+    return 0;
+}

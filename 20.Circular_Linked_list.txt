@@ -1,0 +1,186 @@
+#include <iostream>
+using namespace std;
+
+class Node {
+public:
+    int data;
+    Node* next;
+
+    Node(int val) {
+        data = val;
+        next = NULL;
+    }
+};
+
+class CircularLinkedList {
+public:
+    Node* last;  // points to the last node
+
+    CircularLinkedList() {
+        last = NULL;
+    }
+
+    // Insert at beginning
+    void insertAtBeginning(int val) {
+        Node* newNode = new Node(val);
+
+        if (last == NULL) {
+            last = newNode;
+            last->next = last; // single node circular
+        } else {
+            newNode->next = last->next;
+            last->next = newNode;
+        }
+    }
+
+    // Insert at end
+    void insertAtEnd(int val) {
+        Node* newNode = new Node(val);
+
+        if (last == NULL) {
+            last = newNode;
+            last->next = last;
+        } else {
+            newNode->next = last->next;
+            last->next = newNode;
+            last = newNode; // update last pointer
+        }
+    }
+
+    // Delete from beginning
+    void deleteFromBeginning() {
+        if (last == NULL) {
+            cout << "List is empty!\n";
+            return;
+        }
+
+        Node* temp = last->next;
+
+        if (last == temp) { // only one node
+            last = NULL;
+        } else {
+            last->next = temp->next;
+        }
+        delete temp;
+    }
+
+    // Delete from end
+    void deleteFromEnd() {
+        if (last == NULL) {
+            cout << "List is empty!\n";
+            return;
+        }
+
+        Node* temp = last->next;
+
+        if (last == temp) { // single node
+            delete last;
+            last = NULL;
+            return;
+        }
+
+        while (temp->next != last)
+            temp = temp->next;
+
+        temp->next = last->next;
+        delete last;
+        last = temp;
+    }
+
+    // Search for an element
+    void search(int val) {
+        if (last == NULL) {
+            cout << "List is empty!\n";
+            return;
+        }
+
+        Node* temp = last->next;
+        int pos = 1;
+
+        do {
+            if (temp->data == val) {
+                cout << "Element found at position: " << pos << endl;
+                return;
+            }
+            temp = temp->next;
+            pos++;
+        } while (temp != last->next);
+
+        cout << "Element not found!\n";
+    }
+
+    // Display elements
+    void display() {
+        if (last == NULL) {
+            cout << "List is empty!\n";
+            return;
+        }
+
+        Node* temp = last->next;
+
+        cout << "Circular List: ";
+        do {
+            cout << temp->data << " -> ";
+            temp = temp->next;
+        } while (temp != last->next);
+
+        cout << "(back to head)\n";
+    }
+};
+
+int main() {
+    CircularLinkedList cll;
+    int choice, val;
+
+    while (true) {
+        cout << "\n--- Circular Linked List Menu ---\n";
+        cout << "1. Insert at Beginning\n";
+        cout << "2. Insert at End\n";
+        cout << "3. Delete from Beginning\n";
+        cout << "4. Delete from End\n";
+        cout << "5. Display List\n";
+        cout << "6. Search Element\n";
+        cout << "7. Exit\n";
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter value: ";
+                cin >> val;
+                cll.insertAtBeginning(val);
+                break;
+
+            case 2:
+                cout << "Enter value: ";
+                cin >> val;
+                cll.insertAtEnd(val);
+                break;
+
+            case 3:
+                cll.deleteFromBeginning();
+                break;
+
+            case 4:
+                cll.deleteFromEnd();
+                break;
+
+            case 5:
+                cll.display();
+                break;
+
+            case 6:
+                cout << "Enter value: ";
+                cin >> val;
+                cll.search(val);
+                break;
+
+            case 7:
+                cout << "Exiting...\n";
+                return 0;
+
+            default:
+                cout << "Invalid choice!\n";
+        }
+    }
+}

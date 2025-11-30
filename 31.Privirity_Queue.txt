@@ -1,0 +1,114 @@
+#include <iostream>
+using namespace std;
+
+// Node structure
+struct Node {
+    int data;
+    int priority;
+    Node* next;
+};
+
+// Priority Queue class
+class PriorityQueue {
+private:
+    Node* front; // points to the highest priority element
+
+public:
+    PriorityQueue() {
+        front = nullptr;
+    }
+
+    // Insert element into priority queue
+    void insert(int val, int prio) {
+        Node* newNode = new Node;
+        newNode->data = val;
+        newNode->priority = prio;
+        newNode->next = nullptr;
+
+        // If queue is empty or new node has higher priority than front
+        if (front == nullptr || prio > front->priority) {
+            newNode->next = front;
+            front = newNode;
+        } else {
+            Node* temp = front;
+            while (temp->next != nullptr && temp->next->priority >= prio)
+                temp = temp->next;
+
+            newNode->next = temp->next;
+            temp->next = newNode;
+        }
+
+        cout << val << " inserted with priority " << prio << ".\n";
+    }
+
+    // Delete element with highest priority
+    void deleteHighestPriority() {
+        if (front == nullptr) {
+            cout << "Priority Queue Underflow! Cannot delete.\n";
+            return;
+        }
+
+        Node* temp = front;
+        cout << "Deleted element: " << temp->data << " (priority " << temp->priority << ")\n";
+        front = front->next;
+        delete temp;
+    }
+
+    // Display queue
+    void display() {
+        if (front == nullptr) {
+            cout << "Priority Queue is empty.\n";
+            return;
+        }
+
+        Node* temp = front;
+        cout << "Priority Queue elements [data(priority)]: ";
+        while (temp != nullptr) {
+            cout << temp->data << "(" << temp->priority << ") ";
+            temp = temp->next;
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    PriorityQueue pq;
+    int choice, val, prio;
+
+    while (true) {
+        cout << "\n--- Priority Queue Menu ---\n";
+        cout << "1. Insert\n";
+        cout << "2. Delete Highest Priority\n";
+        cout << "3. Display\n";
+        cout << "4. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter value: ";
+                cin >> val;
+                cout << "Enter priority (higher number = higher priority): ";
+                cin >> prio;
+                pq.insert(val, prio);
+                break;
+
+            case 2:
+                pq.deleteHighestPriority();
+                break;
+
+            case 3:
+                pq.display();
+                break;
+
+            case 4:
+                cout << "Exiting...\n";
+                return 0;
+
+            default:
+                cout << "Invalid choice!\n";
+        }
+    }
+
+    return 0;
+}

@@ -1,0 +1,76 @@
+#include <iostream>
+#include <stack>
+#include <cmath>
+#include <sstream>
+using namespace std;
+
+// Function to apply operator on two operands
+double applyOperation(double a, double b, char op) {
+    switch (op) {
+        case '+': return a + b;
+        case '-': return a - b;
+        case '*': return a * b;
+        case '/':
+            if (b == 0) {
+                cout << "Error: Division by zero!\n";
+                exit(0);
+            }
+            return a / b;
+        case '^': return pow(a, b);
+        default:
+            cout << "Error: Unknown operator " << op << endl;
+            exit(0);
+    }
+}
+
+// Function to evaluate postfix expression
+double evaluatePostfix(string postfix) {
+    stack<double> st;
+    stringstream ss(postfix);
+    string token;
+
+    while (ss >> token) {
+
+        // If token is a number
+        if (isdigit(token[0])) {
+            st.push(stod(token));
+        }
+
+        // If token is an operator
+        else if (token.length() == 1 && string("+-*/^").find(token) != string::npos) {
+            if (st.size() < 2) {
+                cout << "Error: Insufficient operands!" << endl;
+                exit(0);
+            }
+            double b = st.top(); st.pop();
+            double a = st.top(); st.pop();
+            double result = applyOperation(a, b, token[0]);
+            st.push(result);
+        }
+
+        else {
+            cout << "Error: Invalid token '" << token << "'" << endl;
+            exit(0);
+        }
+    }
+
+    if (st.size() != 1) {
+        cout << "Error: Invalid postfix expression!" << endl;
+        exit(0);
+    }
+
+    return st.top();
+}
+
+int main() {
+    string postfix;
+
+    cout << "Enter Postfix Expression (space-separated): ";
+    getline(cin, postfix);
+
+    double result = evaluatePostfix(postfix);
+
+    cout << "Result = " << result << endl;
+
+    return 0;
+}
